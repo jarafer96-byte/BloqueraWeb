@@ -262,7 +262,7 @@
             <div class="card-body">
               <h5 class="card-title">Bloques de 20x20x40</h5>
               <p class="card-text"></p>
-              <p><strong>Precio:</strong> $ <span id="precio_Bloques_de_20x20x40">16000</span></p>
+              <p><strong>Precio:</strong> $ <span id="precio_Bloques_de_20x20x40">1600</span></p>
               <a href="https://wa.me/5492974324876" class="btn btn-whatsapp">Contactar por WhatsApp</a>
               <div class="mt-2 d-flex flex-wrap align-items-center gap-2">
                 <label for="cantidad_1" class="mb-0" style="font-size: 14px;">Cantidad:</label>
@@ -588,13 +588,14 @@
     };
   </script>
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
   import {
     getFirestore,
     collection,
     getDocs,
-    onSnapshot,
-    addDoc
+    onSnapshot
   } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -610,78 +611,32 @@
   const db = getFirestore(app);
   const productosRef = collection(db, "productos");
 
-  // 🔧 Normaliza el ID del span
-  function normalizarNombre(nombre) {
-    if (!nombre || typeof nombre !== "string") return "";
-    return "precio_" + nombre.trim().replace(/\s+/g, "_").replace(/[^\w_]/g, "");
-  }
-
-
-  // ✅ Carga inicial de precios desde Firestore
-async function cargarPreciosIniciales() {
-  try {
-    const snapshot = await getDocs(productosRef);
+  // ✅ Carga inicial
+  getDocs(productosRef).then(snapshot => {
     snapshot.forEach(doc => {
       const data = doc.data();
-
-      // Validación defensiva
-      if (data && typeof data.nombre === "string" && data.precio !== undefined) {
-        const nombreId = normalizarNombre(data.nombre);
-        const precioSpan = document.getElementById(nombreId);
-        if (precioSpan) {
-          precioSpan.textContent = parseFloat(data.precio);
-        }
+      const nombreId = "precio_" + data.nombre.replace(/ /g, "_");
+      const precioSpan = document.getElementById(nombreId);
+      if (precioSpan && data.precio) {
+        precioSpan.textContent = data.precio;
       }
     });
-  } catch (error) {
-    console.error("Error al cargar productos:", error);
-  }
+  });
+
+  // ✅ Actualización en vivo
+  onSnapshot(productosRef, snapshot => {
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const nombreId = "precio_" + data.nombre.replace(/ /g, "_");
+      const precioSpan = document.getElementById(nombreId);
+      if (precioSpan && data.precio) {
+  const nuevoPrecio = parseFloat(data.precio);
+  precioSpan.textContent = nuevoPrecio;
+  actualizarPrecioEnCarrito(data.nombre, nuevoPrecio);
 }
 
-
-  cargarPreciosIniciales();
-
-  // 🔄 Actualización en tiempo real
-  onSnapshot(productosRef, snapshot => {
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    if (data && data.nombre && data.precio) {
-      const nombreId = normalizarNombre(data.nombre);
-      const precioSpan = document.getElementById(nombreId);
-      if (precioSpan) {
-        const nuevoPrecio = parseFloat(data.precio);
-        precioSpan.textContent = nuevoPrecio;
-        if (typeof actualizarPrecioEnCarrito === "function") {
-          actualizarPrecioEnCarrito(data.nombre, nuevoPrecio);
-        }
-      }
-    }
+    });
   });
-});
-
-
-  // ⚠️ Ejecutar solo una vez para evitar duplicados
-  async function cargarProductosDesdeHTML() {
-    const tarjetas = document.querySelectorAll(".card");
-    for (const tarjeta of tarjetas) {
-      const nombre = tarjeta.querySelector(".card-title")?.textContent?.trim();
-      const precioTexto = tarjeta.querySelector("span[id^='precio_']")?.textContent?.trim();
-      const imagen = tarjeta.querySelector("img")?.getAttribute("src");
-
-      if (nombre && precioTexto && imagen) {
-        const precio = parseFloat(precioTexto);
-        await addDoc(collection(db, "productos"), {
-          nombre,
-          precio,
-          imagen
-        });
-        console.log(`✅ Producto cargado: ${nombre}`);
-      }
-    }
-  }
-
-  // 👉 Ejecutá esta función una sola vez desde la consola del navegador:
-  // cargarProductosDesdeHTML();
 </script>
 </body>
 </html>
