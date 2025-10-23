@@ -612,43 +612,53 @@
 
   // 🔧 Normaliza el ID del span
   function normalizarNombre(nombre) {
+    if (!nombre || typeof nombre !== "string") return "";
     return "precio_" + nombre.trim().replace(/\s+/g, "_").replace(/[^\w_]/g, "");
   }
 
+
   // ✅ Carga inicial de precios desde Firestore
-  async function cargarPreciosIniciales() {
-    try {
-      const snapshot = await getDocs(productosRef);
-      snapshot.forEach(doc => {
-        const data = doc.data();
+async function cargarPreciosIniciales() {
+  try {
+    const snapshot = await getDocs(productosRef);
+    snapshot.forEach(doc => {
+      const data = doc.data();
+
+      // Validación defensiva
+      if (data && typeof data.nombre === "string" && data.precio !== undefined) {
         const nombreId = normalizarNombre(data.nombre);
         const precioSpan = document.getElementById(nombreId);
-        if (precioSpan && data.precio) {
+        if (precioSpan) {
           precioSpan.textContent = parseFloat(data.precio);
         }
-      });
-    } catch (error) {
-      console.error("Error al cargar productos:", error);
-    }
+      }
+    });
+  } catch (error) {
+    console.error("Error al cargar productos:", error);
   }
+}
+
 
   cargarPreciosIniciales();
 
   // 🔄 Actualización en tiempo real
   onSnapshot(productosRef, snapshot => {
-    snapshot.forEach(doc => {
-      const data = doc.data();
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    if (data && data.nombre && data.precio) {
       const nombreId = normalizarNombre(data.nombre);
       const precioSpan = document.getElementById(nombreId);
-      if (precioSpan && data.precio) {
+      if (precioSpan) {
         const nuevoPrecio = parseFloat(data.precio);
         precioSpan.textContent = nuevoPrecio;
         if (typeof actualizarPrecioEnCarrito === "function") {
           actualizarPrecioEnCarrito(data.nombre, nuevoPrecio);
         }
       }
-    });
+    }
   });
+});
+
 
   // ⚠️ Ejecutar solo una vez para evitar duplicados
   async function cargarProductosDesdeHTML() {
