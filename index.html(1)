@@ -5,6 +5,18 @@
   <title>Vista previa</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <!-- Vista previa para redes sociales -->
+  <meta property="og:title" content="Mi pagina web">
+  <meta property="og:description" content="Bloquera.">
+  <meta property="og:image" content="https://bloqueraweb.onrender.com/img/imagen2025.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://bloqueraweb.onrender.com">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+
   <!-- Google Fonts disponibles -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Playfair+Display&family=Fira+Code&family=Raleway&family=Quicksand&family=Pacifico&family=Source+Serif+4&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -587,12 +599,12 @@
   } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyALJLWb4tPUVq9UwZ9dB-L6P1AJX9TWCeM", 
-    authDomain: "appweb-2167a.firebaseapp.com",
-    projectId: "appweb-2167a",
-    storageBucket: "appweb-2167a.firebasestorage.app",
-    messagingSenderId: "681717342631",
-    appId: "1:681717342631:web:388935feb3cabc1525d682"
+    apiKey: "AIzaSyCIw9ANl9TwHuH36Sv0WVKRrpKgGJltOqw",
+    authDomain: "bloqueraweb.firebaseapp.com",
+    projectId: "bloqueraweb",
+    storageBucket: "bloqueraweb.firebasestorage.app",
+    messagingSenderId: "530249899339",
+    appId: "1:530249899339:web:8e1bfad0e403474e161cce"
   };
 
   const app = initializeApp(firebaseConfig);
