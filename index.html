@@ -24,15 +24,9 @@
     }
     
     .logo {
-      height: 1vw;
-      max-height: 80px;
+      height: clamp(40px, 4vw, 120px);
     }
 
-    @media (max-width: 600px) {
-      .logo {
-        height: 30px;
-      }
-    }
 
     .descripcion-emprendimiento {
       background-color: rgba(0, 0, 0, 0.5);
