@@ -24,8 +24,16 @@
     }
     
     .logo {
-      height: clamp(40px, 4vw, 120px);
+      height: 5vw;
+      max-height: 180px;
     }
+
+    @media (max-width: 600px) {
+      .logo {
+        height: 60px;
+      }
+    }
+
 
 
     .descripcion-emprendimiento {
